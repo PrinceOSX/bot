@@ -1,0 +1,59 @@
+#!/bin/bash
+
+if [ "$(whoami)" != "root" ] && [[ "$(whoami)" != *"u0"* ]]; then
+    echo "Failed to execute: root permission needed"
+    exit
+fi
+
+if [ $# -eq 0 ]; then
+    printf "Usage: tyfe <command>\n\tedit\t\tEdit source code\n\tfetchstickerid\tStart Sticker ID Fetcher\n\tremove\t\tRemove Tyfe from the machine\n\tsidfedit\tEdit Sticker ID Fetcher source code\n\tstart\t\tStart Tyfe\n\tupdate\t\tUpdate Tyfe to the latest version\n\tversion\t\tPrint the current version\n\n"
+    exit
+fi
+
+TYFE_VERSION="1.5.7"
+
+if [ "$1" = "edit" ]; then
+    nano /etc/tyfe/Tyfe.py
+    exit
+fi
+
+if [ "$1" = "fetchstickerid" ]; then
+    cd /etc/tyfe/
+    python3 StickerIDFetcher.py
+    exit
+fi
+
+if [ "$1" = "remove" ]; then
+    echo "Removing Tyfe..."
+    rm -rf /etc/tyfe/
+    rm /usr/bin/tyfe
+    printf "Done!\n\n"
+    exit
+fi
+
+if [ "$1" = "sidfedit" ]; then
+    nano /etc/tyfe/StickerIDFetcher.py
+    exit
+fi
+
+if [ "$1" = "start" ]; then
+    cd /etc/tyfe/
+    python3 Tyfe.py
+    exit
+fi
+
+if [ "$1" = "update" ]; then
+    echo "Updating Tyfe..."
+    cd /tmp/
+    git clone https://gitlab.com/Noxturnix/Tyfe &> /dev/null
+    Tyfe/install.sh
+    rm -rf /tmp/Tyfe
+    exit
+fi
+
+if [ "$1" = "version" ]; then
+    echo "Tyfe (${TYFE_VERSION})"
+    exit
+fi
+
+echo "Failed to execute: Unknown command"
